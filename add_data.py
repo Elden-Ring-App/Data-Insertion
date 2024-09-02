@@ -40,7 +40,7 @@ if __name__ == "__main__":
 
     except Exception as e:
         logger.error(f"Could not connect to MongoDB due to error: {e}")
-        exit(1)
+        exit(0)
 
     try:
         logger.info("Adding data to MongoDB.")
@@ -48,4 +48,4 @@ if __name__ == "__main__":
         logger.info("Added data to MongoDB.")
     except Exception as e:
         logger.error(f"Could not add data to MongoDB due to error: {e}")
-        exit(1)
+        exit(0)

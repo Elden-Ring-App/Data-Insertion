@@ -1,5 +1,6 @@
 import logging
 import os
+import time
 
 import pymongo
 from dotenv import load_dotenv
@@ -11,9 +12,8 @@ def connect_to_mongo():
     username = os.getenv("USERNAME")
     password = os.getenv("PASSWORD")
     port = int(os.getenv("PORT"))
-    print(username, password, port)
 
-    client = pymongo.MongoClient(f"mongodb://{username}:{password}@localhost:{port}/")
+    client = pymongo.MongoClient(f"mongodb://{username}:{password}@mongo:{port}/")
     db = client.test_db
 
     return db

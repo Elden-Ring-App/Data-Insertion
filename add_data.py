@@ -1,6 +1,5 @@
 import logging
 import os
-import time
 
 import pymongo
 from dotenv import load_dotenv
@@ -25,20 +24,29 @@ def insert_data(db):
 
 
 if __name__ == "__main__":
-    logger = logging.getLogger("Logger")
+    logger = logging.getLogger("DATA-INSERTER")
+    logger.setLevel(logging.INFO)
+    console_handler = logging.StreamHandler()
+
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    console_handler.setFormatter(formatter)
+
+    logger.addHandler(console_handler)
+
     try:
-        logger.log(logging.INFO, "Connecting to MongoDB!")
+        logger.info("Connecting to MongoDB.")
         mongodb = connect_to_mongo()
-        logger.log(logging.INFO, "Connected to MongoDB!")
+        logger.info("Connected to MongoDB.")
 
     except Exception as e:
-        logger.log(logging.ERROR, f"Could not connect to MongoDB due to error: {e}")
-        exit(1)
+        logger.error(f"Could not connect to MongoDB due to error: {e}")
+        exit(0)
 
     try:
-        logger.log(logging.INFO, "Adding data to MongoDB")
-        insert_data(mongodb)
-        logger.log(logging.INFO, "Added data to MongoDB")
+        for file in os.listdir("eldenringScrap"):
+            logger.info(f"Adding {file} data to MongoDB.")
+            insert_data(mongodb)
+            logger.info(f"Added {file} data to MongoDB.")
     except Exception as e:
-        logger.log(logging.ERROR, f"Could not add data to MongoDB due to error: {e}")
-        exit(1)
+        logger.error(f"Could not add data to MongoDB due to error: {e}")
+        exit(0)

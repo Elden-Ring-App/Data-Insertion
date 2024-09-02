@@ -43,9 +43,10 @@ if __name__ == "__main__":
         exit(0)
 
     try:
-        logger.info("Adding data to MongoDB.")
-        insert_data(mongodb)
-        logger.info("Added data to MongoDB.")
+        for file in os.listdir("eldenringScrap"):
+            logger.info(f"Adding {file} data to MongoDB.")
+            insert_data(mongodb)
+            logger.info(f"Added {file} data to MongoDB.")
     except Exception as e:
         logger.error(f"Could not add data to MongoDB due to error: {e}")
         exit(0)

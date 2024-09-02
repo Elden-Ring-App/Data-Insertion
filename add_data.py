@@ -1,6 +1,7 @@
 import logging
 import os
 
+import pandas as pd
 import pymongo
 from dotenv import load_dotenv
 
@@ -18,8 +19,11 @@ def connect_to_mongo():
     return db
 
 
-def insert_data(db):
-    collection = db.test_collection
+def insert_data(db, file, file_name):
+    collection = db.data
+    data = pd.read_csv("eldenringScrap/" + file)
+    print(data.head())
+
     collection.insert_one({"name": "Sample Data", "value": 123})
 
 
@@ -44,9 +48,10 @@ if __name__ == "__main__":
 
     try:
         for file in os.listdir("eldenringScrap"):
-            logger.info(f"Adding {file} data to MongoDB.")
-            insert_data(mongodb)
-            logger.info(f"Added {file} data to MongoDB.")
+            file_name = file.split(".")[0]
+            logger.info(f"Adding {file_name} data to MongoDB.")
+            insert_data(mongodb, file, file_name)
+            logger.info(f"Added {file_name} data to MongoDB.")
     except Exception as e:
         logger.error(f"Could not add data to MongoDB due to error: {e}")
         exit(0)

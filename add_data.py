@@ -14,17 +14,26 @@ def connect_to_mongo():
     port = int(os.getenv("PORT"))
 
     client = pymongo.MongoClient(f"mongodb://{username}:{password}@mongo:{port}/")
-    db = client.test_db
+    db = client.data
 
     return db
 
 
-def insert_data(db, file, file_name):
-    collection = db.data
-    data = pd.read_csv("eldenringScrap/" + file)
-    print(data.head())
+def insert_data(db, file, collection_name):
 
-    collection.insert_one({"name": "Sample Data", "value": 123})
+    collection = db[collection_name]
+
+    try:
+        data = pd.read_csv("eldenringScrap/" + file)
+
+    except Exception as e:
+        return logging.error(f"Could not get {collection_name} data due to error:", e)
+
+    try:
+        data = data.to_dict(orient='records')
+        collection.insert_many(data)
+    except Exception as e:
+        return logging.error(f"Could not insert {collection_name} data due to error:", e)
 
 
 if __name__ == "__main__":
@@ -47,10 +56,10 @@ if __name__ == "__main__":
         exit(0)
 
     try:
-        for file in os.listdir("eldenringScrap"):
-            file_name = file.split(".")[0]
+        for csv_file in os.listdir("eldenringScrap"):
+            file_name = csv_file.split(".")[0]
             logger.info(f"Adding {file_name} data to MongoDB.")
-            insert_data(mongodb, file, file_name)
+            insert_data(mongodb, csv_file, file_name)
             logger.info(f"Added {file_name} data to MongoDB.")
     except Exception as e:
         logger.error(f"Could not add data to MongoDB due to error: {e}")

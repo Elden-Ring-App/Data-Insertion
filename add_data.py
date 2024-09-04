@@ -12,8 +12,9 @@ def connect_to_mongo():
     username = os.getenv("USERNAME")
     password = os.getenv("PASSWORD")
     port = int(os.getenv("PORT"))
+    host = os.getenv("HOST")
 
-    client = pymongo.MongoClient(f"mongodb://{username}:{password}@mongo:{port}/")
+    client = pymongo.MongoClient(f"mongodb://{username}:{password}@{host}:{port}/")
     db = client.data
 
     return db

@@ -7,11 +7,12 @@ from dotenv import load_dotenv
 
 
 def connect_to_mongo():
-    load_dotenv()
+    if os.getenv("NETLIFY") is None:
+        load_dotenv(dotenv_path=".env")
 
     username = os.getenv("USERNAME")
     password = os.getenv("PASSWORD")
-    port = int(os.getenv("PORT"))
+    port = int(os.getenv("MONGO_PORT"))
     host = os.getenv("HOST")
 
     client = pymongo.MongoClient(f"mongodb://{username}:{password}@{host}:{port}/")
